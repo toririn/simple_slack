@@ -22,7 +22,39 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+    client = SimpleSlack::Client.new("your Slack API TOKEN")
+```
+
+### Get
+
+```
+    client.get.channels
+    client.get.users
+```
+
+```
+    client.get.channel("channel_id") => { id: "channel_id", name: "channel_name" }
+```
+
+or
+
+
+```
+    client.get.channel("channel_name") => { id: "channel_id", name: "channel_name" }
+```
+
+and
+
+```
+    client.get.user("user_id" or "user_name") => { id: "user_id", name: "user_name"}
+```
+
+### Post
+
+```
+    client.post.channel(to: "general", text: "hello world", name: "myname")
+```
 
 ## Development
 
