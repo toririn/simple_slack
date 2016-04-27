@@ -15,7 +15,7 @@ class SimpleSlack::Poster
 
   def chat(channel: nil, user: nil, text: , name: "slacker")
     if channel
-      self.channel(to: to, text: text, name: name)
+      self.channel(to: channel, text: text, name: name)
     elsif user
       "yet"
     end
@@ -24,8 +24,7 @@ class SimpleSlack::Poster
   private
 
   def convert(name)
-    getter  = SimpleSlack::Getter.new(@slack)
-    channel = getter.channel(name)
+    channel = @slack.get.channel(name)
     channel[:id]
   end
 end

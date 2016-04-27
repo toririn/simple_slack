@@ -2,10 +2,12 @@ require 'slack'
 require 'omniauth-slack'
 require 'simple_slack/getter'
 require 'simple_slack/poster'
+require 'simple_slack/botter'
 
 class SimpleSlack::Client
   def initialize(token)
-    Slack.configure { |config| config.token = token }
+    @token = token
+    Slack.configure { |config| config.token = @token }
     @slack = Slack.client
   end
 
@@ -15,5 +17,9 @@ class SimpleSlack::Client
 
   def post
     @poster ||= SimpleSlack::Poster.new(@slack)
+  end
+
+  def bot
+    @botter ||= SimpleSlack::Botter.new(@token, self)
   end
 end
