@@ -5,7 +5,6 @@ class SimpleSlack::Botter
     @client   = client
     @channel, @text, @user = ["all"] * 3
     @responce_channel, @responce_text, @responce_user = nil, nil, "slacker"
-    @responce_block = nil
   end
 
   def set_condition(channel: nil, text: nil, user: nil)
@@ -36,7 +35,7 @@ class SimpleSlack::Botter
       end
     end
     puts "client start!"
-    @r_client.start rescue puts "client stop. abort!"
+    @r_client.start
   end
 
   private
@@ -50,7 +49,7 @@ class SimpleSlack::Botter
   end
 
   def valid_params
-    variables = instance_variables.map {|v| v.to_s }
+    variables = ["@responce_channel", "@responce_text"]
     variables.none? {|v| instance_variable_get(v).nil? }
   end
 

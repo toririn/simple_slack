@@ -16,7 +16,7 @@ class SimpleSlack::Client
   end
 
   def post
-    @poster ||= SimpleSlack::Poster.new(@slack)
+    @poster ||= SimpleSlack::Poster.new(@slack, self)
   end
 
   def bot
