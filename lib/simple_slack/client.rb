@@ -1,5 +1,4 @@
 require 'slack'
-require 'omniauth-slack'
 require 'simple_slack/getter'
 require 'simple_slack/poster'
 require 'simple_slack/botter'
