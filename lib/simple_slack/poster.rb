@@ -1,6 +1,7 @@
 class SimpleSlack::Poster
-  def initialize(slack)
+  def initialize(slack, simple_slack)
     @slack = slack
+    @simple_slack = simple_slack
   end
 
   def channel(to: , text: , name: "slacker")
@@ -24,7 +25,7 @@ class SimpleSlack::Poster
   private
 
   def convert(name)
-    channel = @slack.get.channel(name)
+    channel = @simple_slack.get.channel(name)
     channel[:id]
   end
 end
