@@ -52,6 +52,25 @@ class SimpleSlack::Getter
     @image_list.find{|user| user[:id] == id }
   end
 
+  def ims
+    im_list = @slack.im_list
+    im_list["ims"].map do |info|
+      im_user = if info["user"] == "USLACKBOT"
+                  { id: info["user"], name: "owner" }
+                else
+                  user(info["user"])
+                end
+      { id: info["id"], user: im_user }
+    end
+  end
+
+  def im(key)
+    im_user = user(key)
+    @im_list ||= ims
+
+    @im_list.find{|info| info[:user][:id] == im_user[:id] }
+  end
+
   def chats
     "yet"
   end
