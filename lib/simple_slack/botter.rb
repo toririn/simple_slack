@@ -44,7 +44,12 @@ class SimpleSlack::Botter
     if @responce_block.nil?
       @client.post.channel(to: @responce_channel, text: @responce_text, name: @responce_user)
     else
-      @responce_block.call(data)
+      responce = {}.tap do |res|
+        res[:user]    = @client.get.user(data["user"])[:name] rescue "unknown"
+        res[:channel] = @client.get.channel(data["channel"])[:name] rescue "unknown"
+        res[:text]    = data["text"]
+      end
+      @responce_block.call(data, responce)
     end
   end
 
@@ -79,7 +84,7 @@ class SimpleSlack::Botter
     when String
       @client.get.channel(channel)
     when Array
-      channle.map {|ch| @client.get.channel(ch.to_s) }
+      channel.map {|ch| @client.get.channel(ch.to_s) }
     when Hash
       channel
     when Symbol
