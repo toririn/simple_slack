@@ -11,7 +11,7 @@ class SimpleSlack::Getter
   end
 
   def channel(key)
-    key.to_s =~ /\AC0.{7}\Z/ ? key_id = key : key_name = key
+    key.to_s =~ /\AC.{8}\Z/ ? key_id = key : key_name = key
     @channel_list ||= channels
     if key_id
       @channel_list.find{|ch| ch[:id]   == key_id   }
@@ -30,7 +30,7 @@ class SimpleSlack::Getter
   end
 
   def user(key)
-    key.to_s =~ /\AU0.{7}\Z/ ? key_id = key : key_name = key
+    key.to_s =~ /\AU.{8}\Z/ ? key_id = key : key_name = key
     @user_list ||= users
     if key_id
       @user_list.find{|user| user[:id]   == key_id }

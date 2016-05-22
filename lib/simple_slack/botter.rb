@@ -53,11 +53,6 @@ class SimpleSlack::Botter
     end
   end
 
-  def valid_params
-    variables = ["@responce_channel", "@responce_text"]
-    variables.none? {|v| instance_variable_get(v).nil? }
-  end
-
   def fit_condition?(data)
     fit_params?(@channel, data["channel"]) && fit_params?(@user, data["user"]) && fit_params?(@text, data["text"])
   end
@@ -127,4 +122,11 @@ class SimpleSlack::Botter
   def set_responce_channel(channel)
     set_condition_channel(channel)
   end
+
+  def valid_params
+    return true if @responce_block
+    variables = ["@responce_channel", "@responce_text"]
+    variables.none? {|v| instance_variable_get(v).nil? }
+  end
+
 end
