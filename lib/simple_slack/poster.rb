@@ -4,42 +4,50 @@ class SimpleSlack::Poster
     @simple_slack = simple_slack
   end
 
-  def channel(to: , text: , name: "slacker")
-    to.to_s =~ /\AC0.{7}\Z/ ?  id = to : id = convert_channel(to)
-    send_chat(username: name, channel: id, text: text)
+  def channel(to: , text: , name: "slacker", **options)
+    id = convert_channel_to_id(to.to_s)
+    send_chat({ username: name, channel: id, text: text }.merge(options))
   end
 
   def user(to: , text: , name: "slacker")
     "yet"
   end
 
-  def chat(channel: nil, user: nil, text: , name: "slacker")
+  def chat(channel: nil, user: nil, text: , name: "slacker", **options)
     if channel
-      self.channel(to: channel, text: text, name: name)
+      self.channel({ to: channel, text: text, name: name }.merge(options))
     elsif user
       "yet"
     end
   end
 
   def im(to: , text: , name: "slacker")
-    to.to_s =~ /\AD0.{7}\Z/ ?  id = to : id = convert_im(to)
+    id = convert_im_to_id(to.to_s)
     send_chat(username: name, channel: id, text: text)
   end
 
   private
 
-  def send_chat(username: , channel: , text: , icon_emoji: ":ghost:")
-    result = @slack.chat_postMessage(username: username, channel: channel, text: text, icon_emoji: icon_emoji)
+  def send_chat(username: , channel: , text: , icon_emoji: ":ghost:", **options)
+    result = @slack.chat_postMessage({ username: username, channel: channel, text: text, icon_emoji: icon_emoji }.merge(options))
     result["ok"]
   end
 
-  def convert_channel(name)
-    channel = @simple_slack.get.channel(name)
-    channel[:id]
+  def convert_channel_to_id(key)
+    channel = @simple_slack.get.channel(key)
+    if channel
+      channel[:id]
+    else
+      raise "チャンネルが見つかりませんでした。"
+    end
   end
 
-  def convert_im(name)
-    im = @simple_slack.get.im(name)
-    im[:id]
+  def convert_im_to_id(key)
+    im = @simple_slack.get.im(key)
+    if im
+      im[:id]
+    else
+      raise "IMが見つかりませんでした。"
+    end
   end
 end

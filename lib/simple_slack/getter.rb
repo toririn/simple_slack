@@ -3,72 +3,89 @@ class SimpleSlack::Getter
     @slack = slack
   end
 
-  def channels
+  # use options for
+  # :is_channel, :creator, :members, :topic, :purpose, :num_members, etc
+  def channels(options = [])
     channels = @slack.channels_list
     channels["channels"].map do |channel|
-      { id: channel["id"], name: channel["name"] }
+      add_params = options.empty? ?  {} : options_to_hash(options, channel)
+      { id: channel["id"], name: channel["name"] }.merge(add_params)
     end.sort_by {|ch| ch[:name] }
   end
 
-  def channel(key)
+  def channel(key, options = [])
     key.to_s =~ /\AC.{8}\Z/ ? key_id = key : key_name = key
-    @channel_list ||= channels
+    channel_list = channels(options)
     if key_id
-      @channel_list.find{|ch| ch[:id]   == key_id   }
+      channel_list.find{|ch| ch[:id]   == key_id   }
     elsif key_name
-      @channel_list.find{|ch| ch[:name] == key_name }
-    else
-      "not found"
+      channel_list.find{|ch| ch[:name] == key_name }
     end
   end
 
-  def users
+  # use options for
+  # :real_name, :is_admin, :is_bot, etc...
+  def users(options = [])
     users = @slack.users_list
     users["members"].map do |user|
-      { id: user["id"], name: user["name"] }
+      add_params = options.empty? ? {} : options_to_hash(options, user)
+      { id: user["id"], name: user["name"] }.merge(add_params)
     end.sort_by {|ch| ch[:name] }
   end
 
-  def user(key)
+  def user(key, options = [])
     key.to_s =~ /\AU.{8}\Z/ ? key_id = key : key_name = key
-    @user_list ||= users
+    user_list = users(options)
     if key_id
-      @user_list.find{|user| user[:id]   == key_id }
+      user_list.find{|user| user[:id]   == key_id }
     elsif key_name
-      @user_list.find{|user| user[:name] == key_name }
-    else
-      "not found"
+      user_list.find{|user| user[:name] == key_name }
     end
   end
 
-  def images
-    image_list = users["members"].map do |user|
-      { id: user["id"], image: user["profile"]["image_24"] }
+  # use options for
+  # :image_24, :image_32, :image_48, image_72, etc...
+  def images(options = [])
+    users = @slack.users_list
+    users["members"].map do |user|
+      add_params = options.empty? ? {} : options_to_hash(options, user["profile"])
+      { id: user["id"], name: user["name"], image: user["profile"]["image_24"] }.merge(add_params)
     end
   end
 
-  def image(id)
-    @image_list ||= images
-    @image_list.find{|user| user[:id] == id }
+  def image(key, options = [])
+    key.to_s =~ /\AU.{8}\Z/ ? key_id = key : key_name = key
+    image_list = images(options)
+    if key_id
+      image_list.find{|user| user[:id]   == key_id }
+    elsif key_name
+      image_list.find{|user| user[:name] == key_name }
+    end
   end
 
-  def ims
+  # use options for
+  # :created, :is_im, :is_org_shared, :is_user_deleted
+  def ims(options = [])
     im_list = @slack.im_list
-    im_list["ims"].map do |info|
-      im_user = if info["user"] == "USLACKBOT"
-                  { id: info["user"], name: "owner" }
+    im_list["ims"].map do |im|
+      im_user = if im["user"] == "USLACKBOT"
+                  { id: im["user"], name: "slackbot" }
                 else
-                  user(info["user"])
+                  user(im["user"])
                 end
-      { id: info["id"], user: im_user }
+      add_params = options.empty? ? {} : options_to_hash(options, im)
+      { id: im["id"], user: im_user }.merge(add_params)
     end
   end
 
-  def im(key)
-    im_user = user(key)
-    @im_list ||= ims
-
-    @im_list.find{|info| info[:user][:id] == im_user[:id] }
+  def im(key, options = [])
+    key.to_s =~ /\AU.{8}\Z/ ? key_id = key : key_name = key
+    im_list = ims(options)
+    if key_id
+      im_list.find{|im| im[:user][:id]   == key_id }
+    elsif key_name
+      im_list.find{|im| im[:user][:name] == key_name }
+    end
   end
 
   def chats
@@ -78,4 +95,17 @@ class SimpleSlack::Getter
   def chat
     "yet"
   end
+
+  private
+
+  def options_to_hash(options, type = {})
+    marged_option = {}
+    options.each do |op|
+      marged_option.merge!({ op.to_sym => type[op.to_s] })
+    end
+
+    marged_option
+  end
+
+
 end
