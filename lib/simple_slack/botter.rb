@@ -11,6 +11,7 @@ class SimpleSlack::Botter
     @channel = set_condition_channel(channel) if channel
     @user    = set_condition_user(user)       if user
     @text    = set_condition_text(text)       if text
+    { channel: @channel, user: @user, text: @text }
   end
 
   def set_responce(channel: nil , text: nil, user: nil)
@@ -20,6 +21,7 @@ class SimpleSlack::Botter
     if block_given?
       @responce_block = Proc.new(&yield)
     end
+    { channel: @responce_channel, user: @responce_user, text: @responce_text }
   end
 
   def status
@@ -74,7 +76,8 @@ class SimpleSlack::Botter
   end
 
   def set_condition_channel(channel)
-    return nil if channel.nil?
+    return nil   if channel.nil?
+    return "all" if channel.to_s == "all" rescue false
     case channel
     when String
       @client.get.channel(channel)
@@ -90,7 +93,8 @@ class SimpleSlack::Botter
   end
 
   def set_condition_user(user)
-    return nil if user.nil?
+    return nil   if user.nil?
+    return "all" if user.to_s == "all" rescue false
     case user
     when String
       @client.get.user(user)
@@ -106,7 +110,8 @@ class SimpleSlack::Botter
   end
 
   def set_condition_text(text)
-    return nil if text.nil?
+    return nil   if text.nil?
+    return "all" if text.to_s == "all" rescue false
     case text
     when String
       text.gsub(/\p{blank}/,"\s").strip.split("\s")
