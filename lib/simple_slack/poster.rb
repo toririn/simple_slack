@@ -4,6 +4,13 @@ class SimpleSlack::Poster
     @simple_slack = simple_slack
   end
 
+  def channels(to: , text: , name: "slacker", **options)
+    to.all? do |t|
+      id = convert_channel_to_id(t.to_s)
+      send_chat({ username: name, channel: id, text: text }.merge(options))
+    end
+  end
+
   def channel(to: , text: , name: "slacker", **options)
     id = convert_channel_to_id(to.to_s)
     send_chat({ username: name, channel: id, text: text }.merge(options))
@@ -21,9 +28,16 @@ class SimpleSlack::Poster
     end
   end
 
-  def im(to: , text: , name: "slacker")
+  def ims(to: , text: , name: "slacker", **options)
+    to.all? do |t|
+      id = convert_im_to_id(t.to_s)
+      send_chat({ username: name, channel: id, text: text }.merge(options))
+    end
+  end
+
+  def im(to: , text: , name: "slacker", **options)
     id = convert_im_to_id(to.to_s)
-    send_chat(username: name, channel: id, text: text)
+    send_chat({ username: name, channel: id, text: text }.merge(options))
   end
 
   private

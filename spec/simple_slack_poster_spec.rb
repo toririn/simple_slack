@@ -5,6 +5,15 @@ describe SimpleSlack::Poster do
   let(:poster)    { client.post }
   let(:base_text) { "RspecTest@#{Time.now.strftime("%Y年%m月%d日%H時%M分")}に実行" }
 
+  describe "#channels" do
+    let(:send_text) { "#channels\n#{base_text}" }
+    context '(when name)' do
+      it 'is true and post successful' do
+        expect(poster.channels(to: ["test", "test2"], text: send_text)).to eq true
+      end
+    end
+  end
+
   describe "#channel" do
     let(:send_text) { "#channel\n#{base_text}" }
     context '(when id)' do
@@ -36,6 +45,20 @@ describe SimpleSlack::Poster do
       it 'is true and post successful' do
         expect(poster.chat(channel: "test", text: send_text)).to eq true
         expect(poster.chat(user: "slackbot", text: send_text)).to eq "yet"
+      end
+    end
+  end
+
+  describe "#ims" do
+    let(:send_text) { "#ims\n#{base_text}" }
+    context '(when id)' do
+      it 'is true and post successful' do
+        expect(poster.ims(to: ["USLACKBOT"], text: send_text)).to eq true
+      end
+    end
+    context '(when name)' do
+      it 'is true and post successful' do
+        expect(poster.ims(to: ["slackbot"], text: send_text)).to eq true
       end
     end
   end

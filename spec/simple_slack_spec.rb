@@ -32,4 +32,10 @@ describe SimpleSlack do
       expect(client.bot.class).to eq SimpleSlack::Botter
     end
   end
+
+  describe '#toggl' do
+    it 'is SimpleSlack::Toggl class' do
+      expect(client.toggl.class).to eq SimpleSlack::Toggl
+    end
+  end
 end
