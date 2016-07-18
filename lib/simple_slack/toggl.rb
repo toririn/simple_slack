@@ -16,6 +16,8 @@ class SimpleSlack::Toggl
     @simple_client  = simple_slack_client
     @post_bot_name  = "slacker"
     @post_bot_image = ":joy:"
+    @post_channels  = []
+    @post_ims       = []
   end
 
   def configure
