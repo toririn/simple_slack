@@ -42,4 +42,20 @@ module TogglEntriesParameter
     "#{tag} #{description} \(#{work_time}\)"
   end
 
+  def entry_info_hash(entry = latest_entry)
+    # 現在作業中（終了時間がない）であれば現在日時を終了時間として取得
+    stop_time_org  = entry["stop"].nil? ? Time.now : Time.parse(entry["stop"])
+
+    start_time = Time.parse(entry["start"]).getlocal("+09:00")
+    stop_time  = stop_time_org.getlocal("+09:00")
+    diff_time  = (stop_time - start_time)/60
+
+    work_time = diff_time.round(2)
+
+    tag = entry["tags"].join(" ") unless entry["tags"].nil?
+    description = entry["description"]
+
+    { "#{tag} #{description}" => work_time }
+  end
+
 end
