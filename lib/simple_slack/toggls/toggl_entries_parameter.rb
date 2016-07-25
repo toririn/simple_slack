@@ -11,6 +11,14 @@ module TogglEntriesParameter
     end
   end
 
+  def entries_by_tags(*tags)
+    entries.select do |entry|
+      tags.map(&:to_s).all? do |tag|
+        entry["tags"].include?(tag)
+      end
+    end
+  end
+
   def latest_entry
     entries.sort_by{ |entry| entry["start"] }.last
   end
