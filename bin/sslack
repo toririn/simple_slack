@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'simple_slack/cli'
+SimpleSlack::CLI.start

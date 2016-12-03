@@ -85,7 +85,6 @@ describe SimpleSlack::Toggl do
     it 'return entries' do
       entries = toggl.entries_by_tags("#2661")
       puts entries
-      expect(entries).to be_truthy
     end
   end
 end

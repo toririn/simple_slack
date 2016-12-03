@@ -5,7 +5,7 @@ require 'simple_slack/botter'
 require 'simple_slack/toggl'
 
 class SimpleSlack::Client
-  def initialize(token)
+  def initialize(token = ENV['SLACK_API_TOKEN'])
     @token = token
     Slack.configure { |config| config.token = @token }
     @slack = Slack.client

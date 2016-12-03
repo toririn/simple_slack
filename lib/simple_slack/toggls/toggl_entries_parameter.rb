@@ -14,7 +14,7 @@ module TogglEntriesParameter
   def entries_by_tags(*tags)
     entries.select do |entry|
       tags.map(&:to_s).all? do |tag|
-        entry["tags"].include?(tag)
+        entry["tags"] && entry["tags"].include?(tag)
       end
     end
   end

@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "slack-api", '~>1.2.1'
   spec.add_dependency "togglv8"
   spec.add_dependency "awesome_print"
+  spec.add_dependency "thor"
 end
