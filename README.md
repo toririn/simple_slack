@@ -56,6 +56,28 @@ and
     client.post.channel(to: "general", text: "hello world", name: "myname")
 ```
 
+## CLI
+
+### Settings
+
+```
+export SLACK_API_TOKEN=your_api_token
+```
+
+https://api.slack.com/docs/oauth-test-tokens
+
+### Post
+
+```
+sslack post (channel_name) (post_text)
+```
+
+### Rspec
+
+```
+sslack rspec spec/* (post_channel_name)
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
