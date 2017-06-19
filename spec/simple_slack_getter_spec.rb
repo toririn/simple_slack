@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe SimpleSlack::Getter do
+  before :all do
+    @client = SimpleSlack::Client.new(SIMPLE_SLACK_API_TOKEN)
+    @getter = @client.get
+  end
   let(:client) { SimpleSlack::Client.new(SIMPLE_SLACK_API_TOKEN) }
-  let(:getter) { client.get }
+  let(:getter) { @getter }
 
   describe "#users" do
    it 'return all users id, name' do

@@ -2,6 +2,7 @@ require 'slack'
 require 'simple_slack/getter'
 require 'simple_slack/poster'
 require 'simple_slack/botter'
+require 'simple_slack/deleter'
 require 'simple_slack/toggl'
 
 module SimpleSlack
@@ -22,6 +23,10 @@ module SimpleSlack
 
     def bot
       @botter ||= SimpleSlack::Botter.new(@token, self)
+    end
+
+    def delete
+      @delete ||= SimpleSlack::Deleter.new(@slack, self)
     end
 
     def toggl(toggl_api_token = ENV['TOGGL_API_TOKEN'])

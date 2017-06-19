@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe SimpleSlack::Poster do
-  let(:client)    { SimpleSlack::Client.new(SIMPLE_SLACK_API_TOKEN) }
-  let(:poster)    { client.post }
+  before :all do
+    @client = SimpleSlack::Client.new(SIMPLE_SLACK_API_TOKEN)
+    @poster = @client.post
+  end
+  let(:client)    { @client }
+  let(:poster)    { @poster }
   let(:base_text) { "RspecTest@#{Time.now.strftime("%Y年%m月%d日%H時%M分")}に実行" }
 
   describe "#channels" do

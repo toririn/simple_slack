@@ -6,12 +6,15 @@ module SimpleSlack
 
     # use options for
     # :is_channel, :creator, :members, :topic, :purpose, :num_members, etc
-    def channels(options = [])
+    def channels(options = [], cache: true)
+      return @channels if cache && !@channels.nil?
       channels = @slack.channels_list
-      channels["channels"].map do |channel|
-        add_params = options.empty? ?  {} : options_to_hash(options, channel)
-        { id: channel["id"], name: channel["name"] }.merge(add_params)
-      end.sort_by {|ch| ch[:name] }
+      @channels = begin
+        channels["channels"].map do |channel|
+          add_params = options.empty? ?  {} : options_to_hash(options, channel)
+          { id: channel["id"], name: channel["name"] }.merge(add_params)
+        end.sort_by {|ch| ch[:name] }
+      end
     end
 
     def channel(key, options = [])
@@ -26,12 +29,15 @@ module SimpleSlack
 
     # use options for
     # :real_name, :is_admin, :is_bot, etc...
-    def users(options = [])
+    def users(options = [], cache: true)
+      return @users if cache && !@users.nil?
       users = @slack.users_list
-      users["members"].map do |user|
-        add_params = options.empty? ? {} : options_to_hash(options, user)
-        { id: user["id"], name: user["name"] }.merge(add_params)
-      end.sort_by {|ch| ch[:name] }
+      @users = begin
+        users["members"].map do |user|
+          add_params = options.empty? ? {} : options_to_hash(options, user)
+          { id: user["id"], name: user["name"] }.merge(add_params)
+        end.sort_by {|ch| ch[:name] }
+      end
     end
 
     def user(key, options = [])
@@ -46,11 +52,14 @@ module SimpleSlack
 
     # use options for
     # :image_24, :image_32, :image_48, image_72, etc...
-    def images(options = [])
+    def images(options = [], cache: true)
+      return @images if cache && !@images.nil?
       users = @slack.users_list
-      users["members"].map do |user|
-        add_params = options.empty? ? {} : options_to_hash(options, user["profile"])
-        { id: user["id"], name: user["name"], image: user["profile"]["image_24"] }.merge(add_params)
+      @images = begin
+        users["members"].map do |user|
+          add_params = options.empty? ? {} : options_to_hash(options, user["profile"])
+          { id: user["id"], name: user["name"], image: user["profile"]["image_24"] }.merge(add_params)
+        end
       end
     end
 
@@ -66,16 +75,19 @@ module SimpleSlack
 
     # use options for
     # :created, :is_im, :is_org_shared, :is_user_deleted
-    def ims(options = [])
+    def ims(options = [], cache: true)
+      return @ims if cache && !@ims.nil?
       im_list = @slack.im_list
-      im_list["ims"].map do |im|
-        im_user = if im["user"] == "USLACKBOT"
-                    { id: im["user"], name: "slackbot" }
-                  else
-                    user(im["user"])
-                  end
-        add_params = options.empty? ? {} : options_to_hash(options, im)
-        { id: im["id"], user: im_user }.merge(add_params)
+      @ims = begin
+        im_list["ims"].map do |im|
+          im_user = if im["user"] == "USLACKBOT"
+                      { id: im["user"], name: "slackbot" }
+                    else
+                      user(im["user"])
+                    end
+          add_params = options.empty? ? {} : options_to_hash(options, im)
+          { id: im["id"], user: im_user }.merge(add_params)
+        end
       end
     end
 
